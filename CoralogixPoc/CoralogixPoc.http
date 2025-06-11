@@ -1,0 +1,6 @@
+@CoralogixPoc_HostAddress = http://localhost:5002
+
+GET {{CoralogixPoc_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
