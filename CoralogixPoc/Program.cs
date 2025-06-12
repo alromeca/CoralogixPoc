@@ -1,6 +1,8 @@
 
 using CoralogixPoc.Configurations;
 using CoralogixPoc.Providers;
+using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 
 namespace CoralogixPoc
 {
@@ -12,10 +14,19 @@ namespace CoralogixPoc
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+            });
 
             #region Coralogix
             // bind CoralogixOptions from config
@@ -27,7 +38,7 @@ namespace CoralogixPoc
                 .Get<CoralogixOptions>();
 
             builder.Logging.ClearProviders();
-            builder.Logging.AddProvider(new CoralogixLoggerProvider(coraOpts));
+            builder.Logging.AddProvider(new CoralogixLoggerProvider(coraOpts!));
             #endregion
 
             var app = builder.Build();

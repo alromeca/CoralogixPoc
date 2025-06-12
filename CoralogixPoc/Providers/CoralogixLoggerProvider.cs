@@ -56,7 +56,11 @@ class CoralogixLoggerAdapter : ILogger
         _logger = CoralogixLogger.GetLogger(_category);
     }
 
-    public IDisposable BeginScope<TState>(TState state) => NullScope.Instance;
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull
+    {
+        // No scope support in this implementation, return a null scope
+        return NullScope.Instance;
+    }
 
     public bool IsEnabled(LogLevel logLevel) => logLevel >= _minLevel;
 
@@ -64,8 +68,8 @@ class CoralogixLoggerAdapter : ILogger
         LogLevel logLevel,
         EventId id,
         TState state,
-        Exception ex,
-        Func<TState, Exception, string> formatter)
+        Exception? ex,
+        Func<TState, Exception?, string> formatter)
     {
         if (!IsEnabled(logLevel)) return;
 
@@ -88,23 +92,10 @@ class CoralogixLoggerAdapter : ILogger
             }
             else
             {
-                //Hardcoded anonymous object for demonstration purposes
-                var errorMessage = new
-                {
-                    EntityType = "WorkOrder",
-                    EntityId = 1,
-                    ExternalEntityId = "QBO123",
-                    Message = message,
-                    Category = _category,
-                    ClassName = nameof(CoralogixLoggerAdapter),
-                    MethodName = nameof(Log),
-                    EventId = id.Id,
-                    Severity = severity.GetDisplayName()
-                };
-
                 _logger.Log(
                     severity,
-                    JsonSerializer.Serialize(errorMessage),
+                    JsonSerializer.Serialize(message),
+                    category: _category,
                     className: nameof(CoralogixLoggerProvider),
                     methodName: nameof(Log));
             }
