@@ -38,8 +38,7 @@ public class CoralogixLoggerProvider : ILoggerProvider
 
     public void Dispose()
     {
-        // If the SDK supports flushing, call it here
-        //CoralogixLogger.Flush(); // Uncomment if available
+        // No explicit flush or shutdown method available in Coralogix SDK.
     }
 }
 
@@ -56,10 +55,15 @@ class CoralogixLoggerAdapter : ILogger
         _logger = CoralogixLogger.GetLogger(_category);
     }
 
+    // AsyncLocal to hold the current scope for each async context
+    private static readonly AsyncLocal<Scope?> _currentScope = new();
+
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull
     {
-        // No scope support in this implementation, return a null scope
-        return NullScope.Instance;
+        var parent = _currentScope.Value;
+        var newScope = new Scope(state, parent);
+        _currentScope.Value = newScope;
+        return newScope;
     }
 
     public bool IsEnabled(LogLevel logLevel) => logLevel >= _minLevel;
@@ -74,6 +78,14 @@ class CoralogixLoggerAdapter : ILogger
         if (!IsEnabled(logLevel)) return;
 
         var message = formatter(state, ex);
+
+        // Gather scope information
+        var scopeInfo = GetScopeInformation();
+        if (!string.IsNullOrEmpty(scopeInfo))
+        {
+            message = $"{scopeInfo} {message}";
+        }
+
         var severity = logLevel switch
         {
             LogLevel.Trace or LogLevel.Debug => Severity.Debug,
@@ -106,9 +118,37 @@ class CoralogixLoggerAdapter : ILogger
         }
     }
 
-    private class NullScope : IDisposable
+    // Helper to walk the scope stack and build a string
+    private static string? GetScopeInformation()
     {
-        public static NullScope Instance { get; } = new();
-        public void Dispose() { }
+        var scope = _currentScope.Value;
+        if (scope == null) return null;
+
+        var scopes = new List<string>();
+        while (scope != null)
+        {
+            scopes.Add(scope.State?.ToString());
+            scope = scope.Parent;
+        }
+        scopes.Reverse();
+        return string.Join(" => ", scopes);
+    }
+
+    // Scope class to manage scope lifetime
+    private class Scope : IDisposable
+    {
+        public object? State { get; }
+        public Scope? Parent { get; }
+
+        public Scope(object? state, Scope? parent)
+        {
+            State = state;
+            Parent = parent;
+        }
+
+        public void Dispose()
+        {
+            _currentScope.Value = Parent;
+        }
     }
 }

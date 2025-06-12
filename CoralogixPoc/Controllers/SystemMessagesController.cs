@@ -29,8 +29,7 @@ public sealed class SystemMessagesController(ILogger<SystemMessagesController> l
             ExternalEntityId = externalEntityId,
             Message = message,
             ClassName = nameof(SystemMessagesController),
-            MethodName = nameof(AddSystemLogToCoralogix),
-            Severity = severity.GetDisplayName()
+            MethodName = nameof(AddSystemLogToCoralogix)
         };
 
         var logMessage = $"Processing the message: {JsonSerializer.Serialize(errorMessage)}";
