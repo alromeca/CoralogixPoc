@@ -35,11 +35,11 @@ public sealed class SystemMessagesController(ILogger<SystemMessagesController> l
 
         var random = new Random();
 
-        var traceId = Guid.NewGuid().ToString();
+        var correlationId = Guid.NewGuid().ToString();
 
-        using (_logger.BeginScope(new { TraceId = traceId }))
+        using (_logger.BeginScope(new { CorrelationId = correlationId }))
         {
-            var errorMessage = new
+            var logMessage = new
             {
                 EntityType = entityType.GetDisplayName(),
                 EntityId = entityId,
@@ -54,27 +54,25 @@ public sealed class SystemMessagesController(ILogger<SystemMessagesController> l
                 RecoveryPath = errorDetails.RecoveryPath
             };
 
-            var logMessage = $"Processing the message: {JsonSerializer.Serialize(errorMessage)}";
-
             switch (severity)
             {
                 case Severity.Debug:
-                    _logger.LogDebug(logMessage);
+                    _logger.LogDebug("{@LogMessage}", logMessage);
                     break;
                 case Severity.Verbose:
-                    _logger.LogTrace(logMessage);
+                    _logger.LogTrace("{@LogMessage}", logMessage);
                     break;
                 case Severity.Info:
-                    _logger.LogInformation(logMessage);
+                    _logger.LogInformation("{@LogMessage}", logMessage);
                     break;
                 case Severity.Warning:
-                    _logger.LogWarning(logMessage);
+                    _logger.LogWarning("{@LogMessage}", logMessage);
                     break;
                 case Severity.Error:
-                    _logger.LogError(logMessage);
+                    _logger.LogError("{@LogMessage}", logMessage);
                     break;
                 case Severity.Critical:
-                    _logger.LogCritical(logMessage);
+                    _logger.LogCritical("{@LogMessage}", logMessage);
                     break;
                 default:
                     break;

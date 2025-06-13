@@ -104,7 +104,7 @@ class CoralogixLoggerAdapter : ILogger
             {
                 _logger.Log(
                     severity,
-                    JsonSerializer.Serialize(message),
+                    message,//JsonSerializer.Serialize(message),
                     category: _category,
                     className: nameof(CoralogixLoggerProvider),
                     methodName: nameof(Log));

@@ -30,12 +30,12 @@ public sealed class ScopeMessagesController(ILogger<ScopeMessagesController> log
             MethodName = nameof(AddScopeLogToCoralogix),
         };
 
-        var traceId = Guid.NewGuid().ToString();
+        var correlationId = Guid.NewGuid().ToString();
 
-        using (_logger.BeginScope(new { TraceId = traceId }))
+        using (_logger.BeginScope(new { CorrelationId = correlationId }))
         {
-            _logger.LogWarning($"Processing Customer: {JsonSerializer.Serialize(firstMessage)}");
-            _logger.LogWarning($"Processing Invoice: {JsonSerializer.Serialize(secondMessage)}");
+            _logger.LogWarning("Processing Customer: {@LogMessage}", firstMessage);
+            _logger.LogWarning("Processing Invoice: {@LogMessage}", secondMessage);
         }
 
         return Ok();
