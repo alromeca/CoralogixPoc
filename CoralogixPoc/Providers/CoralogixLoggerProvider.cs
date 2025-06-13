@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using CoralogixCoreSDK;
+﻿using CoralogixCoreSDK;
 using System.Collections.Concurrent;
-using Microsoft.OpenApi.Extensions;
 using System.Text.Json;
 using CoralogixPoc.Configurations;
 
@@ -56,12 +54,12 @@ class CoralogixLoggerAdapter : ILogger
     }
 
     // AsyncLocal to hold the current scope for each async context
-    private static readonly AsyncLocal<Scope?> _currentScope = new();
+    private readonly AsyncLocal<Scope?> _currentScope = new();
 
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull
     {
         var parent = _currentScope.Value;
-        var newScope = new Scope(state, parent);
+        var newScope = new Scope(state, parent, _currentScope);
         _currentScope.Value = newScope;
         return newScope;
     }
@@ -119,7 +117,7 @@ class CoralogixLoggerAdapter : ILogger
     }
 
     // Helper to walk the scope stack and build a string
-    private static string? GetScopeInformation()
+    private string? GetScopeInformation()
     {
         var scope = _currentScope.Value;
         if (scope == null) return null;
@@ -139,16 +137,18 @@ class CoralogixLoggerAdapter : ILogger
     {
         public object? State { get; }
         public Scope? Parent { get; }
+        private readonly AsyncLocal<Scope?> _scopeRef;
 
-        public Scope(object? state, Scope? parent)
+        public Scope(object? state, Scope? parent, AsyncLocal<Scope?> scopeRef)
         {
             State = state;
             Parent = parent;
+            _scopeRef = scopeRef;
         }
 
         public void Dispose()
         {
-            _currentScope.Value = Parent;
+            _scopeRef.Value = Parent;
         }
     }
 }

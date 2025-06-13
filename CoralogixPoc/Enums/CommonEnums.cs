@@ -2,19 +2,24 @@
 
 public enum EntityType
 {
-    Patient = 1,
-    Study = 2,
-    Series = 3,
-    Image = 4,
-    User = 5,
-    Device = 6,
-    Location = 7,
-    Organization = 8,
-    Department = 9,
-    Equipment = 10,
-    Protocol = 11,
-    Workflow = 12,
-    Task = 13,
-    Report = 14,
-    Notification = 15
+    Customer = 1,
+    Invoice = 2,
+    Item = 3,
+    Quote = 4
+}
+
+public enum AccountingSystem
+{
+    QBO = 1,
+    QBD = 2
+}
+
+public enum QuickBooksErrorCode
+{
+    Error6190_816,
+    Error6210_0,
+    Error195,
+    Error15243,
+    H202,
+    UnrecoverableError
 }

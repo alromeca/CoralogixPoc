@@ -1,6 +1,4 @@
-﻿using CoralogixCoreSDK;
-using CoralogixPoc.Enums;
-using DiagnosticImagingSystem.Controllers;
+﻿using CoralogixPoc.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Extensions;
 using System.Text.Json;
@@ -18,7 +16,7 @@ public sealed class ScopeMessagesController(ILogger<ScopeMessagesController> log
     {
         var firstMessage = new
         {
-            EntityType = EntityType.Task.GetDisplayName(),
+            EntityType = EntityType.Customer.GetDisplayName(),
             EntityId = 123,
             ClassName = nameof(ScopeMessagesController),
             MethodName = nameof(AddScopeLogToCoralogix),
@@ -26,18 +24,18 @@ public sealed class ScopeMessagesController(ILogger<ScopeMessagesController> log
 
         var secondMessage = new
         {
-            EntityType = EntityType.User.GetDisplayName(),
+            EntityType = EntityType.Invoice.GetDisplayName(),
             EntityId = 453,
             ClassName = nameof(ScopeMessagesController),
             MethodName = nameof(AddScopeLogToCoralogix),
         };
 
-        var traceId = HttpContext.TraceIdentifier;
+        var traceId = Guid.NewGuid().ToString();
 
         using (_logger.BeginScope(new { TraceId = traceId }))
         {
-            _logger.LogWarning($"Processing Task: {JsonSerializer.Serialize(firstMessage)}");
-            _logger.LogWarning($"Processing User: {JsonSerializer.Serialize(secondMessage)}");
+            _logger.LogWarning($"Processing Customer: {JsonSerializer.Serialize(firstMessage)}");
+            _logger.LogWarning($"Processing Invoice: {JsonSerializer.Serialize(secondMessage)}");
         }
 
         return Ok();

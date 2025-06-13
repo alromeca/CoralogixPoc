@@ -1,7 +1,4 @@
-﻿using CoralogixCoreSDK;
-using CoralogixPoc.Enums;
-using DiagnosticImagingSystem.Controllers;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace CoralogixPoc.Controllers;
 
@@ -11,7 +8,6 @@ public sealed class ExceptionMessagesController(ILogger<ExceptionMessagesControl
 {
     private readonly ILogger<ExceptionMessagesController> _logger = logger;
 
-    [HttpPost]
     [HttpPost]
     public ActionResult AddErrorLogToCoralogix()
     {
