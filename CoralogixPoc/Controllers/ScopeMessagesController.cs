@@ -1,7 +1,6 @@
 ﻿using CoralogixPoc.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Extensions;
-using System.Text.Json;
 
 namespace CoralogixPoc.Controllers;
 
