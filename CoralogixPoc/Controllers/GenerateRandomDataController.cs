@@ -1,5 +1,6 @@
 ﻿using CoralogixCoreSDK;
 using CoralogixPoc.Enums;
+using CoralogixPoc.Extensions;
 using CoralogixPoc.Respositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Extensions;
@@ -12,14 +13,7 @@ namespace CoralogixPoc.Controllers;
 public sealed class GenerateRandomDataController(ILogger<GenerateRandomDataController> logger) : ControllerBase
 {
     private readonly ILogger<GenerateRandomDataController> _logger = logger;
-    private readonly Guid[] _companyIds =
-    {
-        Guid.Parse("1e72b35a-3f60-4f33-be4b-ec7e3c84ef4a"),
-        Guid.Parse("e393350b-b411-4ea1-b046-8fa4fae2435c"),
-        Guid.Parse("8e32c7ea-8c24-435d-a239-4ae56c5eac34"),
-        Guid.Parse("17a983ab-e858-46d5-8fce-d97be400096a"),
-        Guid.Parse("1fc48c3d-29a8-416f-b7da-ae4977df602c")
-    };
+    private readonly CompanyName[] _companyNames = CompanyRepository.GetAllCompanyNames();
 
     [HttpPost]
     public ActionResult GenerateRandomData()
@@ -43,11 +37,12 @@ public sealed class GenerateRandomDataController(ILogger<GenerateRandomDataContr
             var entityType = entityTypes[random.Next(entityTypes.Length)];
             var entityId = random.Next(1000, 9999).ToString();
             var externalEntityId = Guid.NewGuid().ToString();
-            var message = $"Random log message #{++logCount}";
 
             var errorInfo = QuickBooksErrorRepository.TryGetErrorInfo(quickBooksErrorCode, out var errorDetails);
 
             var correlationId = Guid.NewGuid().ToString();
+
+            var randomCompanyName = _companyNames[random.Next(_companyNames.Length)];
 
             using (_logger.BeginScope(new { CorrelationId = correlationId }))
             {
@@ -56,39 +51,17 @@ public sealed class GenerateRandomDataController(ILogger<GenerateRandomDataContr
                     EntityType = entityType.GetDisplayName(),
                     EntityId = entityId,
                     ExternalEntityId = externalEntityId,
-                    Message = message,
                     ClassName = nameof(GenerateRandomDataController),
                     MethodName = nameof(GenerateRandomData),
-                    CompanyId = _companyIds[random.Next(_companyIds.Length)],
+                    CompanyId = CompanyRepository.GetCompanyId(randomCompanyName),
+                    CompanyName = randomCompanyName,
                     Target = accountingSystem.GetDisplayName(),
                     QuickBooksErrorCode = quickBooksErrorCode.GetDisplayName(),
-                    RootCause = errorDetails.RootCause,
-                    RecoveryPath = errorDetails.RecoveryPath
+                    errorDetails.RootCause,
+                    errorDetails.RecoveryPath
                 };
 
-                switch (severity)
-                {
-                    case Severity.Debug:
-                        _logger.LogDebug("{@LogMessage}", logMessage);
-                        break;
-                    case Severity.Verbose:
-                        _logger.LogTrace("{@LogMessage}", logMessage);
-                        break;
-                    case Severity.Info:
-                        _logger.LogInformation("{@LogMessage}", logMessage);
-                        break;
-                    case Severity.Warning:
-                        _logger.LogWarning("{@LogMessage}", logMessage);
-                        break;
-                    case Severity.Error:
-                        _logger.LogError("{@LogMessage}", logMessage);
-                        break;
-                    case Severity.Critical:
-                        _logger.LogCritical("{@LogMessage}", logMessage);
-                        break;
-                    default:
-                        break;
-                }
+                severity.LogBySeverity(_logger, logMessage);
             }
 
             Thread.Sleep(TimeSpan.FromSeconds(15));

@@ -33,8 +33,11 @@ public sealed class ScopeMessagesController(ILogger<ScopeMessagesController> log
 
         using (_logger.BeginScope(new { CorrelationId = correlationId }))
         {
-            _logger.LogWarning("Processing Customer: {@LogMessage}", firstMessage);
-            _logger.LogWarning("Processing Invoice: {@LogMessage}", secondMessage);
+            //Processing Customer:
+            _logger.LogWarning("{@LogMessage}", firstMessage);
+
+            //Processing Invoice:
+            _logger.LogWarning("{@LogMessage}", secondMessage);
         }
 
         return Ok();

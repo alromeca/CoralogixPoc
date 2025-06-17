@@ -5,7 +5,6 @@ namespace CoralogixPoc.Respositories;
 
 public static class QuickBooksErrorRepository
 {
-    // 3. Initialize the dictionary mapping each code to its ErrorInfo
     private static readonly Dictionary<QuickBooksErrorCode, ErrorInfo> _errorMap =
         new()
         {

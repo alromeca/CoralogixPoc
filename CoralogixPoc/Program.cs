@@ -41,14 +41,16 @@ namespace CoralogixPoc
 
             Environment.SetEnvironmentVariable("CORALOGIX_LOG_URL", coraOpts.Url);
 
-            LoggingConfiguration config = new LoggingConfiguration();
+            LoggingConfiguration config = new();
 
-            CoralogixTarget coralogixTarget = new CoralogixTarget();
-            coralogixTarget.PrivateKey = coraOpts.PrivateKey;
-            coralogixTarget.ApplicationName = coraOpts.ApplicationName;
-            coralogixTarget.SubsystemName = coraOpts.SubsystemName;
+            CoralogixTarget coralogixTarget = new()
+            {
+                PrivateKey = coraOpts.PrivateKey,
+                ApplicationName = coraOpts.ApplicationName,
+                SubsystemName = coraOpts.SubsystemName,
 
-            coralogixTarget.Layout = @"${date:format=HH\\:mm\\:ss} ${logger} ${message}";
+                Layout = @"${date:format=HH\\:mm\\:ss} ${logger} ${message}"
+            };
             config.AddTarget("Coralogix", coralogixTarget);
 
 

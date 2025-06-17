@@ -23,3 +23,21 @@ public enum QuickBooksErrorCode
     H202,
     UnrecoverableError
 }
+
+public enum ErrorType
+{
+    InvalidOperation = 1,
+    Argument = 2,
+    NullReference = 3,
+    TimeOut = 4,
+    Default = 5
+}
+
+public enum CompanyName
+{
+    AcmeCorp,
+    GlobexInc,
+    Initech,
+    UmbrellaLLC,
+    StarkIndustries
+}
