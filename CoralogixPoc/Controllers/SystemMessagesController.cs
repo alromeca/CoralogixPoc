@@ -36,7 +36,7 @@ public sealed class SystemMessagesController : ControllerBase
 
         var correlationId = Guid.NewGuid().ToString();
 
-        using (_logger.BeginScope(new { CorrelationId = correlationId }))
+        using (_logger.BeginScope(new Dictionary<string, object> { ["CorrelationId"] = correlationId }))
         {
             var logMessage = new
             {
