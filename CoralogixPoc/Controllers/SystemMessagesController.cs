@@ -1,17 +1,24 @@
 ﻿using CoralogixCoreSDK;
-using CoralogixPoc.Enums;
-using CoralogixPoc.Extensions;
-using CoralogixPoc.Respositories;
+using CoralogixPoc.Common.Extensions;
+using CoralogixPoc.Data.Respositories;
+using CoralogixPoc.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Extensions;
 
-namespace DiagnosticImagingSystem.Controllers;
+namespace CoralogixPoc.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public sealed class SystemMessagesController(ILogger<SystemMessagesController> logger) : ControllerBase
+public sealed class SystemMessagesController : ControllerBase
 {
-    private readonly ILogger<SystemMessagesController> _logger = logger;
+    private readonly ILogger<SystemMessagesController> _logger;
+    private readonly CompanyRepository _companyRepository;
+
+    public SystemMessagesController(ILogger<SystemMessagesController> logger, CompanyRepository companyRepository)
+    {
+        _logger = logger;
+        _companyRepository = companyRepository;
+    }
 
     [HttpPost]
     public ActionResult AddSystemLogToCoralogix(
@@ -24,7 +31,6 @@ public sealed class SystemMessagesController(ILogger<SystemMessagesController> l
         CompanyName companyName)
     {
         var errorInfo = QuickBooksErrorRepository.TryGetErrorInfo(quickBooksErrorCode, out var errorDetails);
-        var companyId = CompanyRepository.GetCompanyId(companyName);
 
         var random = new Random();
 
@@ -39,7 +45,7 @@ public sealed class SystemMessagesController(ILogger<SystemMessagesController> l
                 ExternalEntityId = externalEntityId,
                 ClassName = nameof(SystemMessagesController),
                 MethodName = nameof(AddSystemLogToCoralogix),
-                CompanyId = companyId,
+                CompanyId = _companyRepository.GetCompanyId(companyName),
                 CompanyName = companyName,
                 Target = targetAccountingSystem.GetDisplayName(),
                 QuickBooksErrorCode = quickBooksErrorCode.GetDisplayName(),

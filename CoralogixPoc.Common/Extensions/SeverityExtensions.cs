@@ -1,6 +1,7 @@
 ﻿using CoralogixCoreSDK;
+using Microsoft.Extensions.Logging;
 
-namespace CoralogixPoc.Extensions;
+namespace CoralogixPoc.Common.Extensions;
 
 public static class SeverityExtensions
 {

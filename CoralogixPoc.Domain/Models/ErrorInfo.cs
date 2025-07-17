@@ -1,3 +1,3 @@
-﻿namespace CoralogixPoc.Models;
+﻿namespace CoralogixPoc.Domain.Models;
 
 public record ErrorInfo(string RootCause, string RecoveryPath);

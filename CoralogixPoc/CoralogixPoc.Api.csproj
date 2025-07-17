@@ -13,4 +13,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CoralofixPoc.Data\CoralogixPoc.Data.csproj" />
+    <ProjectReference Include="..\CoralogixPoc.Common\CoralogixPoc.Common.csproj" />
+    <ProjectReference Include="..\CoralogixPoc.Domain\CoralogixPoc.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

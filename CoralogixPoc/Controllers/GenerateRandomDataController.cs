@@ -1,19 +1,26 @@
 ﻿using CoralogixCoreSDK;
-using CoralogixPoc.Enums;
-using CoralogixPoc.Extensions;
-using CoralogixPoc.Respositories;
+using CoralogixPoc.Common.Extensions;
+using CoralogixPoc.Data.Respositories;
+using CoralogixPoc.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Extensions;
-using System.Text.Json;
 
-namespace CoralogixPoc.Controllers;
+namespace CoralogixPoc.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public sealed class GenerateRandomDataController(ILogger<GenerateRandomDataController> logger) : ControllerBase
+public sealed class GenerateRandomDataController : ControllerBase
 {
-    private readonly ILogger<GenerateRandomDataController> _logger = logger;
-    private readonly CompanyName[] _companyNames = CompanyRepository.GetAllCompanyNames();
+    private readonly ILogger<GenerateRandomDataController> _logger;
+    private readonly CompanyRepository _companyRepository;
+    private readonly CompanyName[] _companyNames;
+
+    public GenerateRandomDataController(ILogger<GenerateRandomDataController> logger, CompanyRepository companyRepository)
+    {
+        _logger = logger;
+        _companyRepository = companyRepository;
+        _companyNames = _companyRepository.GetAllCompanyNames();
+    }
 
     [HttpPost]
     public ActionResult GenerateRandomData()
@@ -44,7 +51,7 @@ public sealed class GenerateRandomDataController(ILogger<GenerateRandomDataContr
 
             var randomCompanyName = _companyNames[random.Next(_companyNames.Length)];
 
-            using (_logger.BeginScope(new { CorrelationId = correlationId }))
+            using (_logger.BeginScope(new Dictionary<string, object> { ["CorrelationId"] = correlationId }))
             {
                 var logMessage = new
                 {
@@ -53,7 +60,7 @@ public sealed class GenerateRandomDataController(ILogger<GenerateRandomDataContr
                     ExternalEntityId = externalEntityId,
                     ClassName = nameof(GenerateRandomDataController),
                     MethodName = nameof(GenerateRandomData),
-                    CompanyId = CompanyRepository.GetCompanyId(randomCompanyName),
+                    CompanyId = _companyRepository.GetCompanyId(randomCompanyName),
                     CompanyName = randomCompanyName,
                     Target = accountingSystem.GetDisplayName(),
                     QuickBooksErrorCode = quickBooksErrorCode.GetDisplayName(),

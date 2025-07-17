@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoralogixPoc", "CoralogixPoc\CoralogixPoc.csproj", "{89BB50F5-0713-4E00-AAFC-01C8679EF6A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoralogixPoc.Api", "CoralogixPoc\CoralogixPoc.Api.csproj", "{89BB50F5-0713-4E00-AAFC-01C8679EF6A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoralogixPoc.Domain", "CoralogixPoc.Domain\CoralogixPoc.Domain.csproj", "{B0677128-49E2-487A-A743-4FF8E011670A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoralogixPoc.Data", "CoralofixPoc.Data\CoralogixPoc.Data.csproj", "{64A98558-4841-44A0-A493-A6D6FF982726}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoralogixPoc.Common", "CoralogixPoc.Common\CoralogixPoc.Common.csproj", "{AE1778E0-FC14-4474-BA34-57F150D5B2A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{89BB50F5-0713-4E00-AAFC-01C8679EF6A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89BB50F5-0713-4E00-AAFC-01C8679EF6A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89BB50F5-0713-4E00-AAFC-01C8679EF6A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0677128-49E2-487A-A743-4FF8E011670A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0677128-49E2-487A-A743-4FF8E011670A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0677128-49E2-487A-A743-4FF8E011670A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0677128-49E2-487A-A743-4FF8E011670A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64A98558-4841-44A0-A493-A6D6FF982726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64A98558-4841-44A0-A493-A6D6FF982726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64A98558-4841-44A0-A493-A6D6FF982726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64A98558-4841-44A0-A493-A6D6FF982726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE1778E0-FC14-4474-BA34-57F150D5B2A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE1778E0-FC14-4474-BA34-57F150D5B2A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE1778E0-FC14-4474-BA34-57F150D5B2A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE1778E0-FC14-4474-BA34-57F150D5B2A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,7 @@
-﻿using System.Text.Json;
+﻿using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
-namespace CoralogixPoc.Extensions;
+namespace CoralogixPoc.Common.Extensions;
 
 public static class LoggerExtensions
 {

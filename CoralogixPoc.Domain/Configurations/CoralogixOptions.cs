@@ -1,4 +1,6 @@
-﻿namespace CoralogixPoc.Configurations;
+﻿using Microsoft.Extensions.Logging;
+
+namespace CoralogixPoc.Domain.Configurations;
 
 public class CoralogixOptions
 {

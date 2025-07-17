@@ -1,8 +1,8 @@
-﻿using CoralogixPoc.Enums;
+﻿using CoralogixPoc.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Extensions;
 
-namespace CoralogixPoc.Controllers;
+namespace CoralogixPoc.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -31,7 +31,7 @@ public sealed class ScopeMessagesController(ILogger<ScopeMessagesController> log
 
         var correlationId = Guid.NewGuid().ToString();
 
-        using (_logger.BeginScope(new { CorrelationId = correlationId }))
+        using (_logger.BeginScope(new Dictionary<string, object> { ["CorrelationId"] = correlationId }))
         {
             //Processing Customer:
             _logger.LogWarning("{@LogMessage}", firstMessage);

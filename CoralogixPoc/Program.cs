@@ -1,12 +1,11 @@
-
-using CoralogixPoc.Configurations;
+using CoralogixPoc.Data.Respositories;
 using Microsoft.OpenApi.Models;
 using NLog.Config;
-using NLog.Coralogix;
+using NLog.Targets;
 using NLog.Web;
 using System.Text.Json.Serialization;
 
-namespace CoralogixPoc
+namespace CoralogixPoc.Api
 {
     public class Program
     {
@@ -32,30 +31,38 @@ namespace CoralogixPoc
 
             #region Coralogix
             // bind CoralogixOptions from config
-            builder.Services.Configure<CoralogixOptions>(
-                builder.Configuration.GetSection("Coralogix"));
+            //builder.Services.Configure<CoralogixOptions>(
+            //    builder.Configuration.GetSection("Coralogix"));
 
-            var coraOpts = builder.Configuration
-                .GetSection("Coralogix")
-                .Get<CoralogixOptions>();
+            //var coraOpts = builder.Configuration
+            //    .GetSection("Coralogix")
+            //    .Get<CoralogixOptions>();
 
-            Environment.SetEnvironmentVariable("CORALOGIX_LOG_URL", coraOpts.Url);
+            //Environment.SetEnvironmentVariable("CORALOGIX_LOG_URL", coraOpts.Url);
 
             LoggingConfiguration config = new();
 
-            CoralogixTarget coralogixTarget = new()
-            {
-                PrivateKey = coraOpts.PrivateKey,
-                ApplicationName = coraOpts.ApplicationName,
-                SubsystemName = coraOpts.SubsystemName,
+            //CoralogixTarget coralogixTarget = new()
+            //{
+            //    PrivateKey = coraOpts.PrivateKey,
+            //    ApplicationName = coraOpts.ApplicationName,
+            //    SubsystemName = coraOpts.SubsystemName,
 
-                Layout = @"${date:format=HH\\:mm\\:ss} ${logger} ${message}"
-            };
-            config.AddTarget("Coralogix", coralogixTarget);
+            //    Layout = @"${date:format=HH\\:mm\\:ss} ${logger} ${message}"
+            //};
+            //config.AddTarget("Coralogix", coralogixTarget);
 
 
             //Configure the Level filter for the Coralogix Target 
-            var logginRule = new LoggingRule("*", NLog.LogLevel.Debug, coralogixTarget);
+            //var logginRule = new LoggingRule("*", NLog.LogLevel.Debug, coralogixTarget);
+
+            ConsoleTarget consoleTarget = new()
+            {
+                Layout = @"${date:format=HH\:mm\:ss} [CorrelationId=${scopeproperty:=CorrelationId}] [CompanyName=${scopeproperty:=CompanyName}] ${logger} ${message}"
+            };
+            config.AddTarget("Console", consoleTarget);
+            var logginRule = new LoggingRule("*", NLog.LogLevel.Debug, consoleTarget);
+
             config.LoggingRules.Add(logginRule);
 
             // Define the actual NLog logger which through it all log entires should be reported
@@ -66,6 +73,8 @@ namespace CoralogixPoc
             builder.Logging.ClearProviders();
             builder.Host.UseNLog();
             #endregion
+
+            builder.Services.AddScoped<CompanyRepository>();
 
             var app = builder.Build();
 

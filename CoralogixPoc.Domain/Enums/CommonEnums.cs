@@ -1,4 +1,4 @@
-﻿namespace CoralogixPoc.Enums;
+﻿namespace CoralogixPoc.Domain.Enums;
 
 public enum EntityType
 {

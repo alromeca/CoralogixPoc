@@ -1,7 +1,7 @@
-﻿using CoralogixPoc.Enums;
-using CoralogixPoc.Models;
+﻿using CoralogixPoc.Domain.Enums;
+using CoralogixPoc.Domain.Models;
 
-namespace CoralogixPoc.Respositories;
+namespace CoralogixPoc.Data.Respositories;
 
 public static class QuickBooksErrorRepository
 {

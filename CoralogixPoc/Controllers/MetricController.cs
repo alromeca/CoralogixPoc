@@ -1,8 +1,8 @@
-﻿using CoralogixPoc.Enums;
-using CoralogixPoc.Extensions;
+﻿using CoralogixPoc.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
+using CoralogixPoc.Common.Extensions;
 
-namespace CoralogixPoc.Controllers;
+namespace CoralogixPoc.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
