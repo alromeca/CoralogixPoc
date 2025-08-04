@@ -33,6 +33,7 @@ public sealed class GenerateRandomDataController : ControllerBase
         var accountingSystems = Enum.GetValues<AccountingSystem>();
         var quickBooksErrorCodes = Enum.GetValues<QuickBooksErrorCode>();
         var entityTypes = Enum.GetValues<EntityType>();
+        var eventSubTypes = new[] { "Accounting", "Other" };
 
         int logCount = 0;
 
@@ -57,6 +58,7 @@ public sealed class GenerateRandomDataController : ControllerBase
                 {
                     EntityType = entityType.GetDisplayName(),
                     EntityId = entityId,
+                    EventSubType = eventSubTypes[random.Next(eventSubTypes.Length)],
                     ExternalEntityId = externalEntityId,
                     ClassName = nameof(GenerateRandomDataController),
                     MethodName = nameof(GenerateRandomData),
