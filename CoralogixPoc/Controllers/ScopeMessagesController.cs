@@ -11,6 +11,7 @@ public sealed class ScopeMessagesController(ILogger<ScopeMessagesController> log
     private readonly ILogger<ScopeMessagesController> _logger = logger;
 
     [HttpPost]
+    [Route("SingleScope")]
     public ActionResult AddScopeLogToCoralogix()
     {
         var firstMessage = new
@@ -36,6 +37,43 @@ public sealed class ScopeMessagesController(ILogger<ScopeMessagesController> log
             //Processing Customer:
             _logger.LogWarning("{@LogMessage}", firstMessage);
 
+            //Processing Invoice:
+            _logger.LogWarning("{@LogMessage}", secondMessage);
+        }
+
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("MultipleScopes")]
+    public ActionResult AddMultipleScopeLogsToCoralogix()
+    {
+        var firstMessage = new
+        {
+            EntityType = EntityType.Customer.GetDisplayName(),
+            EntityId = 123,
+            ClassName = nameof(ScopeMessagesController),
+            MethodName = nameof(AddMultipleScopeLogsToCoralogix),
+        };
+
+        var secondMessage = new
+        {
+            EntityType = EntityType.Invoice.GetDisplayName(),
+            EntityId = 453,
+            ClassName = nameof(ScopeMessagesController),
+            MethodName = nameof(AddMultipleScopeLogsToCoralogix),
+        };
+
+        var firstCorrelationId = Guid.NewGuid().ToString();
+        using (_logger.BeginScope(new Dictionary<string, object> { ["CorrelationId"] = firstCorrelationId, ["CompanyName"] = "First Company Name" }))
+        {
+            //Processing Customer:
+            _logger.LogWarning("{@LogMessage}", firstMessage);
+        }
+
+        var secondCorrelationId = Guid.NewGuid().ToString();
+        using (_logger.BeginScope(new Dictionary<string, object> { ["CorrelationId"] = secondCorrelationId, ["CompanyName"] = "Second Company Name" }))
+        {
             //Processing Invoice:
             _logger.LogWarning("{@LogMessage}", secondMessage);
         }

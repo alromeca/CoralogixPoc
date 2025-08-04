@@ -21,7 +21,7 @@ public sealed class SystemMessagesController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult AddSystemLogToCoralogix(
+    public ActionResult AddSystemLogToCoralogixWithNestedScopes(
         Severity severity, 
         EntityType entityType, 
         string entityId, 
@@ -44,7 +44,7 @@ public sealed class SystemMessagesController : ControllerBase
                 EntityId = entityId,
                 ExternalEntityId = externalEntityId,
                 ClassName = nameof(SystemMessagesController),
-                MethodName = nameof(AddSystemLogToCoralogix),
+                MethodName = nameof(AddSystemLogToCoralogixWithNestedScopes),
                 CompanyId = _companyRepository.GetCompanyId(companyName),
                 CompanyName = companyName,
                 Target = targetAccountingSystem.GetDisplayName(),
