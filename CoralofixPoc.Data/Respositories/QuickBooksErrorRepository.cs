@@ -49,6 +49,13 @@ public static class QuickBooksErrorRepository
                         RootCause: "QuickBooks closed unexpectedly (often due to too many open windows or data corruption).",
                         RecoveryPath: "Open the file with all windows closed (hold ALT when launching), try logging in as a different user, then run the QuickBooks File Doctor."
                     )
+                },
+                {
+                    QuickBooksErrorCode.Error80070057,
+                    new ErrorInfo(
+                        RootCause: "Parameter is incorrect",
+                        RecoveryPath: string.Empty
+                    )
                 }
         };
 

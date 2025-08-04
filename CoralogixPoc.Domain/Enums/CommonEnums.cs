@@ -21,7 +21,8 @@ public enum QuickBooksErrorCode
     Error195,
     Error15243,
     H202,
-    UnrecoverableError
+    UnrecoverableError,
+    Error80070057
 }
 
 public enum ErrorType
