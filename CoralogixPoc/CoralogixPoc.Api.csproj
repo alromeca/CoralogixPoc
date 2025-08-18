@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="CoralogixCoreNLog" Version="1.1.12" />
     <PackageReference Include="NLog.Targets.Http" Version="1.0.20" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.5.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="6.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 

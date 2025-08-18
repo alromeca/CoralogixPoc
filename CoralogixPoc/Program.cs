@@ -3,9 +3,10 @@ using CoralogixPoc.Domain.Configurations;
 using Microsoft.OpenApi.Models;
 using NLog.Config;
 using NLog.Coralogix;
-using NLog.Targets;
+using NLog.Layouts;
 using NLog.Web;
 using System.Text.Json.Serialization;
+using JsonAttribute = NLog.Layouts.JsonAttribute;
 
 namespace CoralogixPoc.Api
 {
@@ -14,8 +15,6 @@ namespace CoralogixPoc.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
 
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
@@ -49,31 +48,56 @@ namespace CoralogixPoc.Api
                 PrivateKey = coraOpts.PrivateKey,
                 ApplicationName = coraOpts.ApplicationName,
                 SubsystemName = coraOpts.SubsystemName,
-
-                Layout = @"${date:format=HH\\:mm\\:ss} ${logger} ${message}"
+                Layout = new JsonLayout
+                {
+                    IncludeEventProperties = true,
+                    IncludeScopeProperties = true,
+                    Attributes =
+                    {
+                        new JsonAttribute("time", "${date:format=yyyy-MM-ddTHH\\:mm\\:ss.fffK}"),
+                        new JsonAttribute("level", "${level:upperCase=true}"),
+                        new JsonAttribute("message", "${message}"),
+                        new JsonAttribute("exception", "${exception:format=ToString}"),
+                        new JsonAttribute("logger", "${logger}"),
+                        new JsonAttribute("threadId", "${threadid}"),
+                    }
+                },
             };
             config.AddTarget("Coralogix", coralogixTarget);
-
-
-            //Configure the Level filter for the Coralogix Target 
-            //var logginRule = new LoggingRule("*", NLog.LogLevel.Debug, coralogixTarget);
+            var logginRule = new LoggingRule("*", NLog.LogLevel.Debug, coralogixTarget);
 
             //ConsoleTarget consoleTarget = new()
             //{
-            //    Layout = @"${date:format=HH\:mm\:ss} [CorrelationId=${scopeproperty:=CorrelationId}] [CompanyName=${scopeproperty:=CompanyName}] ${logger} ${message}"
+            //    Layout = new JsonLayout
+            //    {
+            //        IncludeEventProperties = true,
+            //        IncludeScopeProperties = true,
+            //        Attributes =
+            //            {
+            //                new JsonAttribute("time", "${date:format=yyyy-MM-ddTHH\\:mm\\:ss.fffK}"),
+            //                new JsonAttribute("level", "${level:upperCase=true}"),
+            //                new JsonAttribute("message", "${message}"),
+            //                new JsonAttribute("exception", "${exception:format=ToString}"),
+            //                new JsonAttribute("logger", "${logger}"),
+            //                new JsonAttribute("threadId", "${threadid}"),
+            //            }
+            //    }
             //};
             //config.AddTarget("Console", consoleTarget);
-            var logginRule = new LoggingRule("*", NLog.LogLevel.Debug, coralogixTarget);
+            //var logginRule = new LoggingRule("*", NLog.LogLevel.Debug, consoleTarget);
 
             config.LoggingRules.Add(logginRule);
 
-            // Define the actual NLog logger which through it all log entires should be reported
             NLog.LogManager.Configuration = config;
 
-            NLog.Logger nlogger = NLog.LogManager.GetLogger("CoralogixPoc");
-
             builder.Logging.ClearProviders();
-            builder.Host.UseNLog();
+            builder.Host.UseNLog(new NLogAspNetCoreOptions
+            {
+                CaptureMessageTemplates = true,
+                CaptureMessageParameters = true,
+                CaptureMessageProperties = true,
+                IncludeScopes = true
+            });
             #endregion
 
             builder.Services.AddScoped<CompanyRepository>();
